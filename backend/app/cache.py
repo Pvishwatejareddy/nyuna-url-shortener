@@ -4,30 +4,42 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Connect to Redis
-redis_client = redis.from_url(os.getenv("REDIS_URL"))
+REDIS_URL = os.getenv("REDIS_URL")
 
-# How long to keep URLs in cache (24 hours)
+# Handle both local Redis and Upstash (SSL)
+if REDIS_URL and REDIS_URL.startswith("rediss://"):
+    redis_client = redis.from_url(
+        REDIS_URL,
+        ssl_cert_reqs=None
+    )
+else:
+    redis_client = redis.from_url(
+        REDIS_URL or "redis://localhost:6379"
+    )
+
 CACHE_TTL = 86400
 
 def get_cached_url(short_code: str):
-    """Look for a short code in Redis cache"""
-    # Try to find it in Redis
-    cached = redis_client.get(short_code)
-    if cached:
-        # Found it! Return the original URL
-        return cached.decode("utf-8")
-    # Not found in cache
-    return None
+    try:
+        cached = redis_client.get(short_code)
+        if cached:
+            return cached.decode("utf-8")
+        return None
+    except Exception:
+        return None
 
 def set_cached_url(short_code: str, original_url: str):
-    """Save a short code → URL mapping in Redis"""
-    redis_client.setex(
-        name=short_code,
-        time=CACHE_TTL,
-        value=original_url
-    )
+    try:
+        redis_client.setex(
+            name=short_code,
+            time=CACHE_TTL,
+            value=original_url
+        )
+    except Exception:
+        pass
 
 def delete_cached_url(short_code: str):
-    """Remove a URL from cache"""
-    redis_client.delete(short_code)
+    try:
+        redis_client.delete(short_code)
+    except Exception:
+        pass
