@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = 'http://localhost:8000'
+const API_BASE = 'https://nyuna-backend.onrender.com'
 
 // Shorten a long URL
 export const shortenURL = async (originalUrl) => {
