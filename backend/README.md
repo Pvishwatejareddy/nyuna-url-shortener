@@ -146,10 +146,12 @@ Cache-aside only caches what's actually requested. Write-through caches everythi
 
 | Metric | Value |
 |--------|-------|
-| Cache hit response time | ~5ms |
-| Cache miss response time | ~50ms |
+| Cache hit response time | ~17ms |
+| Peak requests per second | 18 RPS (50 concurrent users) |
+| Redirect success rate | 99.9% (8,549/8,555 requests) |
 | Rate limit | 10 req/60sec per IP |
 | Max short codes (6 chars) | 56 billion |
+| Load tested with | Locust (50 concurrent users) |
 
 ---
 
