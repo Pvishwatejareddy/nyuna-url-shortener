@@ -1,7 +1,7 @@
 import toast from 'react-hot-toast'
 
 export default function UrlCard({ urlData, onViewAnalytics, onLinkOpened }) {
-  const shortUrl = `http://localhost:8000/${urlData.short_code}`
+  const shortUrl = `https://nyuna-backend.onrender.com/${urlData.short_code}`
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shortUrl)
